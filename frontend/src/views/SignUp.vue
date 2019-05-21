@@ -5,21 +5,44 @@
             <form @submit.prevent>
                 <div id="username">
                     <label for="username">username:
-                        <input type="text" name="username" id="username">
+                        <input type="text" name="username" id="username" v-model="user.username">
                     </label>
                 </div>
                 <div id="password">
                     <label for="password">password:
-                        <input type="password" name="password" id="password">
+                        <input type="password" name="password" id="password" v-model="user.password">
                     </label>
                 </div>
                 <div id="submit">
-                    <button type="submit">Sign Up</button>
+                    <button type="submit" @click="signUp">Sign Up</button>
                 </div>
             </form>
         </div>
     </div>
 </template>
+
+<script>
+import { mapActions } from 'vuex';
+
+export default {
+    data() {
+        return {
+            user: {
+                username: null,
+                password: null
+            }
+
+        }
+    },
+
+    methods: {
+        ...mapActions(['signup']),
+        signUp() {
+            this.signup(this.user)
+        }
+    }
+}
+</script>
 
 <style scoped>
 .container {
