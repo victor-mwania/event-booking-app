@@ -4,19 +4,32 @@
       <nav>
         <div id="menu">
           <div id="name">
-            <h4> <router-link to="/"> Sync </router-link></h4>
+            <h4>
+              <router-link to="/">Sync</router-link>
+            </h4>
           </div>
           <div id="sub-menu">
-            <div v-if="auth == true">
+            <div v-if="user.username == null">
               <div id="auth">
                 <h4>
-                  <router-link to="/login">Login</router-link>/ <router-link to="/sign-up"> Sign Up</router-link>
+                  <router-link to="/login">Login</router-link>|
+                  <router-link to="/sign-up">Sign Up</router-link>
                 </h4>
               </div>
             </div>
-            <div v-else>
+            <div v-if="user.username" id="user">
               <div id="tickets">
-                <h4> <router-link to="/tickets">Tickets </router-link></h4>
+                <h4>
+                  <router-link to="/tickets">Bookings</router-link>
+                </h4>
+              </div>
+              <div id="create">
+                <h4>
+                  <router-link to="create-events">Create</router-link>
+                </h4>
+              </div>
+              <div id="logout">
+                <h4 @click="logOut">Logout</h4>
               </div>
             </div>
           </div>
@@ -27,13 +40,26 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
 export default {
   data() {
-    return {
-      auth: false,
+    return {}
+  },
+  computed: {
+    ...mapGetters(["user"])
+  },
+  created(){
+    this.getUser()
+  },
+  methods: {
+    ...mapActions(["getUser"]),
+    logOut(){
+      localStorage.clear("jwt")
+      localStorage.clear("user")
+      this.getUser()
     }
   }
-}
+};
 </script>
 
 <style scoped>
@@ -52,13 +78,18 @@ nav {
 #name h4 {
   font-size: 25px;
   color: #eee;
-  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
   margin: 10px 0px 13px;
 }
 
 #sub-menu {
   color: #eee;
-  font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+}
+#user {
+  display: grid;
+  grid-template-columns: 4fr 4fr 4fr;
+  grid-column-gap: 10px;
 }
 
 a {
