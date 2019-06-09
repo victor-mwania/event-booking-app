@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const User = require('../models/user.model');
 const config = require('../config');
+const passport = require('passport');
 
 router.post('/sync/user/signup', (req, res) => {
     bcrypt.genSalt(10, (err, salt) => {
@@ -11,11 +12,14 @@ router.post('/sync/user/signup', (req, res) => {
         bcrypt.hash(req.body.password, salt, function (err, hash) {
             if (err) throw (err)
             else {
-                const user = new User({
+                console.log(req.body.userName, hash)
+                let user = new User({
                     userName: req.body.userName,
                     password: hash
-                });
+                })
+
                 user.save().then(function (result) {
+                    console.log(result)
                     res.json(result);
                 }).catch(error => {
                     res.send(error)
@@ -26,9 +30,10 @@ router.post('/sync/user/signup', (req, res) => {
     })
 });
 
-router.post('/sync/user/login', (req, res, next) => {
+router.post('/sync/user/login', (req, res) => {
+    console.log(req.body)
     User.findOne({
-        username: req.body.username
+        userName: req.body.userName
     }, (err, user) => {
         if (err) {
             res.send(err)
@@ -48,9 +53,17 @@ router.post('/sync/user/login', (req, res, next) => {
                 })
             })
         }
-    })
+    }) 
 });
 
-
+router.get('/sync/user/:user_id', (req, res) => {
+    User.findById(req.params.user_id, ).then(function (err, user) {
+        if (err) {
+            res.send(err)
+        } else {
+            res.json(user)
+        }
+    }).catch(err => res.send(err))
+});
 
 module.exports = router;
